@@ -1,0 +1,23 @@
+.field{
+    
+}
+
+button{
+    width: 20px;
+    height: 20px;
+}
+
+.firstPlayer{
+    background: rgb(255, 0, 0);
+}
+
+.secondPlayer{
+    background: blue;
+}
+
+.red{
+    background-color: red;
+}
+.blue{
+    background-color: blue;
+}
