@@ -3,7 +3,6 @@ const body = document.querySelector(".field");
 let motion = 0;
 
 
-let massPaints = []
 let field = [
   [],
   [],
@@ -49,7 +48,7 @@ body.addEventListener("click", (event) => {
     return;
   }
   putPoint(point);
-  console.log(motion)
+  
   
 });
 
@@ -62,28 +61,34 @@ function putPoint(point) {
     // field[coordinatesPoint(point).str][coordinatesPoint(point).col] = motion
     field2[coordinatesPoint(point).str][coordinatesPoint(point).col].player =
       motion;
-    giveAllPaints(coordinatesPoint(point).str, coordinatesPoint(point).col, motion)
+      checkPoints(coordinatesPoint(point).str, coordinatesPoint(point).col, motion)
+      console.log(motion)
     motion = 0;
-    console.log(massPaints)
     return;
   }
   point.classList.add("firstPlayer");
   // field[coordinatesPoint(point).str][coordinatesPoint(point).col] = motion
   field2[coordinatesPoint(point).str][coordinatesPoint(point).col].player =
     motion;
-    giveAllPaints(coordinatesPoint(point).str, coordinatesPoint(point).col, motion)
+    console.log(motion)
+    checkPoints(coordinatesPoint(point).str, coordinatesPoint(point).col, motion)
   motion = 1;
-  console.log(massPaints)
 }
 
 function coordinatesPoint(point) {
-  let str = point.id.slice(0, point.id.indexOf("n"));
-  let col = point.id.slice(point.id.indexOf("n") + 1);
+  let str = Number(point.id.slice(0, point.id.indexOf("n")));
+  let col = Number(point.id.slice(point.id.indexOf("n") + 1));
 
   return { str, col };
 }
 
-function checkPoints(str, col, player) {}
+function checkPoints(str, col, player) {
+  console.log(str, col, player)
+  let field2Copy = structuredClone(field2)
+  let massPaints = []
+  giveAllPaints(str, col, player,massPaints,field2Copy)
+  console.log(massPaints)
+}
 
 let field2 = [
   [
@@ -173,43 +178,51 @@ for (let i = 0; i < field2.length; i++) {
 
 
 
-function giveAllPaints(str, col, player) {
+function giveAllPaints(str, col, player, massPaints,field2Copy) {
     console.log(str, col, player);
 
-  console.log(massPaints);
+  console.log(field2);
+  
   let peremForPush = false;
 
-  if (field2[str][col].statusChek == 1 || field2[str][col].player === player) {
+  // if (field2[str][col].statusChek == 1 || field2[str][col].player === player) {
     
-    return;
+  //   return;
+  // }
+  if(massPaints.length == 0){
+    massPaints.push({ str, col, player, statusChek: 1 });
   }
+
 
   for (let i = 0; i < massPaints.length; i++) {
     if (massPaints[i].str == str && massPaints[i].col == col) {
       peremForPush = true;
+      console.log(peremForPush)
     }
   }
 
-  if (peremForPush) {
+
+  if (!peremForPush) {
     massPaints.push({ str, col, player, statusChek: 1 });
+    console.log(1)
   }
 
-  field2[str][col].statusChek = 1;
-
+  field2Copy[str][col].statusChek = 1;
+  console.log(field2Copy[str - 1][col - 1]);
   if (
-    field2[str - 1][col - 1].player === player &&
-    field2[str - 1][col - 1].statusChek === 0
+    field2Copy[str - 1][col - 1].player === player &&
+    field2Copy[str - 1][col - 1].statusChek === 0
   ) {
     console.log(massPaints);
     massPaints.push({ str: str - 1, col: col - 1, player, statusChek: 0 });
   }
-  if (field2[str - 1][col].player === player && field2[str - 1][col].statusChek === 0) {
+  if (field2Copy[str - 1][col].player === player && field2Copy[str - 1][col].statusChek === 0) {
     console.log(massPaints);
     massPaints.push({ str: str - 1, col: col, player, statusChek: 0 });
   }
   if (
-    field2[str - 1][col + 1].player === player &&
-    field2[str - 1][col + 1].statusChek === 0 &&
+    field2Copy[str - 1][col + 1].player === player &&
+    field2Copy[str - 1][col + 1].statusChek === 0 &&
     checkOnPush(str - 1, col + 1, massPaints)
   ) {
     console.log(massPaints);
@@ -218,16 +231,16 @@ function giveAllPaints(str, col, player) {
   }
 
   if (
-    field2[str][col - 1].player === player &&
-    field2[str][col - 1].statusChek === 0 &&
+    field2Copy[str][col - 1].player === player &&
+    field2Copy[str][col - 1].statusChek === 0 &&
     checkOnPush(str, col - 1, massPaints)
   ) {
     console.log(massPaints);
     massPaints.push({ str: str, col: col - 1, player, statusChek: 0 });
   }
   if (
-    field2[str][col + 1].player === player &&
-    field2[str][col + 1].statusChek === 0 &&
+    field2Copy[str][col + 1].player === player &&
+    field2Copy[str][col + 1].statusChek === 0 &&
     checkOnPush(str, col + 1, massPaints)
   ) {
     console.log(massPaints);
@@ -235,24 +248,24 @@ function giveAllPaints(str, col, player) {
   }
 
   if (
-    field2[str + 1][col - 1].player === player &&
-    field2[str + 1][col - 1].statusChek === 0 &&
+    field2Copy[str + 1][col - 1].player === player &&
+    field2Copy[str + 1][col - 1].statusChek === 0 &&
     checkOnPush(str + 1, col - 1, massPaints)
   ) {
     console.log(massPaints);
     massPaints.push({ str: str + 1, col: col - 1, player, statusChek: 0 });
   }
   if (
-    field2[str + 1][col].player === player &&
-    field2[str + 1][col].statusChek === 0 &&
+    field2Copy[str + 1][col].player === player &&
+    field2Copy[str + 1][col].statusChek === 0 &&
     checkOnPush(str + 1, col, massPaints)
   ) {
     console.log(massPaints);
     massPaints.push({ str: str + 1, col: col, player, statusChek: 0 });
   }
   if (
-    field2[str + 1][col + 1].player === player &&
-    field2[str + 1][col + 1].statusChek === 0 &&
+    field2Copy[str + 1][col + 1].player === player &&
+    field2Copy[str + 1][col + 1].statusChek === 0 &&
     checkOnPush(str + 1, col + 1, massPaints)
   ) {
     console.log(massPaints);
@@ -266,7 +279,7 @@ function giveAllPaints(str, col, player) {
       continue;
     }
     massPaints[i].statusChek = 1;
-    return giveAllPaints(massPaints[i].str, massPaints[i].col, player);
+    return giveAllPaints(massPaints[i].str, massPaints[i].col, player, massPaints, field2Copy);
   }
 }
 
