@@ -74,7 +74,7 @@ for (let i = 0; i < field2.length;i++) {
         if(field2[i][j].player !== ''){
             if(field2[i][j].player){
                 btn.classList.add("firstPlayer")
-            } 
+            }
             else {btn.classList.add("secondPlayer")}
         }
         btn.id = `${i}n${j}`
@@ -101,17 +101,7 @@ function check(str,col,motion){
         // field2Copy[str+1][col-1] == motion ? massPointsForChek.push({str : str-1,col :col-1}): ''
         // field2Copy[str+1][col] == motion ? massPointsForChek.push({str : str-1,col :col-1}): ''
         // field2Copy[str+1][col+1] == motion ? massPointsForChek.push({str : str-1,col :col-1}): ''
-    // } 
+    // }
 
     console.log(field2Copy)
 }
-
-
-
-
-
-
-
-
-
-
