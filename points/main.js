@@ -2,42 +2,29 @@ const body = document.querySelector(".field");
 
 let motion = 0;
 
-let field = [
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
-	[],
+let checks = [
+	{ str: -1, col: -1 },
+	{ str: -1, col: 0 },
+	{ str: -1, col: +1 },
+	{ str: 0, col: -1 },
+	{ str: 0, col: +1 },
+	{ str: +1, col: -1 },
+	{ str: +1, col: 0 },
+	{ str: +1, col: +1 },
 ];
 
-// for (let i = 0; i < 25; i++) {
+let field = [];
+
+// for (let i = 0; i < 19; i++) {
 //   let line = document.createElement("div");
 //   line.classList.add(".line");
-//   for (let j = 0; j < 25; j++) {
+//   field.push([])
+//   for (let j = 0; j < 19; j++) {
 //     let btn = document.createElement("button");
 //     btn.id = `${i}n${j}`;
 //     line.append(btn);
 //     body.append(line);
+// 	field[i].push({ player: "", statusChek: 0 })
 //   }
 // }
 
@@ -87,9 +74,12 @@ function checkPoints(str, col, player) {
 	console.log(str, col, player);
 	let field2Copy = structuredClone(field2);
 	let massPaints = [];
+
 	giveAllPaints(str, col, player, massPaints, field2Copy);
-	checkRing(massPaints);
-	console.log(massPaints);
+	// checkRing(massPaints);
+	checkRing(massPaints)
+	
+	console.log(massPaints, 'всё');
 }
 
 let field2 = [
@@ -183,16 +173,16 @@ function giveAllPaints(str, col, player, massPaints, field2Copy) {
 
 	console.log(field2);
 
-	let checks = [
-		{ str: -1, col: -1 },
-		{ str: -1, col: 0 },
-		{ str: -1, col: +1 },
-		{ str: 0, col: -1 },
-		{ str: 0, col: +1 },
-		{ str: +1, col: -1 },
-		{ str: +1, col: 0 },
-		{ str: +1, col: +1 },
-	];
+	// let checks = [
+	// 	{ str: -1, col: -1 },
+	// 	{ str: -1, col: 0 },
+	// 	{ str: -1, col: +1 },
+	// 	{ str: 0, col: -1 },
+	// 	{ str: 0, col: +1 },
+	// 	{ str: +1, col: -1 },
+	// 	{ str: +1, col: 0 },
+	// 	{ str: +1, col: +1 },
+	// ];
 
 	let peremForPush = false;
 
@@ -281,10 +271,34 @@ function checkOnPush(strCheck, colCheck, massPaints) {
 }
 
 function checkRing(massPaints) {
-	for (let i = 0; i < massPaints.length; i++) {
-		if (i == 0 || i == massPaints.length) {
-			continue;
+	if(massPaints.length >= 4){
+		let firstComparisonPoint = false
+		let secondComparisonPoint = false
+		for(let i = 0; i < massPaints.length; i++){
+
+			if(i == massPaints.length - 3 || i == massPaints.length - 2){
+				for(let j = 0; j < checks.length; j++){
+					if(massPaints[i].str + checks[j].str == massPaints[massPaints.length-1].str && 
+						massPaints[i].col + checks[j].col == massPaints[massPaints.length-1].col){
+						if(i == massPaints.length - 3){
+							firstComparisonPoint = true
+						} else {secondComparisonPoint = true}
+						continue
+					}
+				}
+			}
 		}
-            
+		console.log(firstComparisonPoint,secondComparisonPoint)
+
+		if(firstComparisonPoint && secondComparisonPoint){
+			for(let i = 0; i < massPaints.length; i++){
+				const button = document.getElementById(`${massPaints[i].str}n${massPaints[i].col}`)
+				button.classList.add("green")
+			}
+		}
+
 	}
 }
+
+
+
