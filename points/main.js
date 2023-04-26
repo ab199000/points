@@ -28,18 +28,62 @@ let field = [];
 //   }
 // }
 
+
 body.addEventListener("click", (event) => {
-	let point = event.target;
-	if (point.tagName != "BUTTON") {
-		return;
-	}
-	putPoint(point);
+  let point = event.target;
+  if (point.tagName != "BUTTON") {
+    return;
+  }
+  console.log("click")
+  putPoint(point);
 });
 
+body.addEventListener("mouseover", (event) => {
+  let point = event.target;
+  if (point.tagName != "BUTTON") {
+    return;
+  }
+console.log(point.classList.value.split(" ").length);
+  
+	if (point.classList.value.split(" ").length == 2) {
+    return;
+  }
+  setTimeout(() => {
+    if (motion) {
+      console.log(23);
+      point.classList.toggle("blue");
+    } else {
+      point.classList.toggle("red");
+    }
+  }, 50);
+});
+
+body.addEventListener("mouseout", (event) => {
+  let point = event.target;
+  if (point.tagName != "BUTTON") {
+    return;
+  }
+  	if (point.classList.value.split(" ").length == 2) {
+      return;
+    }
+console.log(point.classList.value.split(' '));
+  setTimeout(()=>{
+
+  if (motion) {
+    console.log(23);
+    point.classList.toggle("blue");
+  } else {
+    point.classList.toggle("red");
+  }
+  },50)
+
+});
+
+
 function putPoint(point) {
-	if (point.classList.value != "") {
-		return;
-	}
+	// if (point.classList.value != "") {
+	// 	return;
+	// }
 	if (motion) {
 		point.classList.add("secondPlayer");
 		// field[coordinatesPoint(point).str][coordinatesPoint(point).col] = motion
