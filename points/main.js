@@ -2,6 +2,10 @@ const body = document.querySelector(".field");
 
 let motion = 0;
 
+let scoreFirst = 0
+
+let scoreSecond = 0
+
 let checks = [
 	{ str: -1, col: -1 },
 	{ str: -1, col: 0 },
@@ -13,98 +17,103 @@ let checks = [
 	{ str: +1, col: +1 },
 ];
 
-let field = [];
+let field =   [];
 
-// for (let i = 0; i < 19; i++) {
-//   let line = document.createElement("div");
-//   line.classList.add(".line");
-//   field.push([])
-//   for (let j = 0; j < 19; j++) {
-//     let btn = document.createElement("button");
-//     btn.id = `${i}n${j}`;
-//     line.append(btn);
-//     body.append(line);
-// 	field[i].push({ player: "", statusChek: 0 })
-//   }
-// }
+for (let i = 0; i < 21; i++) {
+  	let line = document.createElement("div");
+  	line.classList.add(".line");
+  	if(i == 0 || i == 20){
+		line.style.display = "none"
+  	}
+  	field.push([])
+  	for (let j = 0; j < 21; j++) {
+    	let btn = document.createElement("button");
+    	btn.id = `${i}n${j}`;
+		if(j == 0 || j == 20){
+			btn.style.display = "none"
+		}
+		line.append(btn);
+		body.append(line);
+		field[i].push({ player: "", statusChek: 0 })
+  }
+}
 
 
 body.addEventListener("click", (event) => {
-  let point = event.target;
-  if (point.tagName != "BUTTON") {
-    return;
-  }
-  console.log("click")
-  putPoint(point);
+  	let point = event.target;
+  	if (point.tagName != "BUTTON") {
+    	return;
+ 	}
+	putPoint(point);
+	colorForPlayer()
 });
 
 body.addEventListener("mouseover", (event) => {
-  let point = event.target;
-  if (point.tagName != "BUTTON") {
-    return;
-  }
-console.log(point.classList.value.split(" ").length);
-  
+	let point = event.target;
+	if (point.tagName != "BUTTON") {
+		return;
+	}
+
 	if (point.classList.value.split(" ").length == 2) {
     return;
-  }
-  setTimeout(() => {
-    if (motion) {
-      console.log(23);
-      point.classList.toggle("blue");
-    } else {
-      point.classList.toggle("red");
-    }
-  }, 50);
+  	}
+  	setTimeout(() => {
+		if (motion) {
+		point.classList.toggle("blue");
+		} else {
+		point.classList.toggle("red");
+		}
+	}, 50);
 });
 
 body.addEventListener("mouseout", (event) => {
-  let point = event.target;
-  if (point.tagName != "BUTTON") {
-    return;
-  }
+  	let point = event.target;
+  	if (point.tagName != "BUTTON") {
+    	return;
+  	}
   	if (point.classList.value.split(" ").length == 2) {
-      return;
+      	return;
     }
-console.log(point.classList.value.split(' '));
-  setTimeout(()=>{
+  	setTimeout(()=>{
 
-  if (motion) {
-    console.log(23);
-    point.classList.toggle("blue");
-  } else {
+  	if (motion) {
+    	point.classList.toggle("blue");
+  	} else {
     point.classList.toggle("red");
-  }
-  },50)
+  	}
+  	},50)
 
 });
 
 
 function putPoint(point) {
-	// if (point.classList.value != "") {
-	// 	return;
-	// }
+  const massClassPoint = point.classList.value.split(' ')
+  for(let i = 0; i < massClassPoint.length; i ++){
+    if(massClassPoint[i] == "secondPlayer" || massClassPoint[i] == "firstPlayer"){
+      return
+    }
+  }
+
 	if (motion) {
 		point.classList.add("secondPlayer");
-		// field[coordinatesPoint(point).str][coordinatesPoint(point).col] = motion
-		field2[coordinatesPoint(point).str][coordinatesPoint(point).col].player =
+		field[coordinatesPoint(point).str][coordinatesPoint(point).col].player =
 			motion;
-		checkPoints(
+		  checkPoints(
 			coordinatesPoint(point).str,
 			coordinatesPoint(point).col,
 			motion
 		);
-		console.log(motion);
+    // colorForPlayer()
 		motion = 0;
 		return;
 	}
 	point.classList.add("firstPlayer");
-	// field[coordinatesPoint(point).str][coordinatesPoint(point).col] = motion
-	field2[coordinatesPoint(point).str][coordinatesPoint(point).col].player =
+	field[coordinatesPoint(point).str][coordinatesPoint(point).col].player =
 		motion;
-	console.log(motion);
 	checkPoints(coordinatesPoint(point).str, coordinatesPoint(point).col, motion);
-	motion = 1;
+
+      motion = 1;
+
 }
 
 function coordinatesPoint(point) {
@@ -115,118 +124,100 @@ function coordinatesPoint(point) {
 }
 
 function checkPoints(str, col, player) {
-	console.log(str, col, player);
-	let field2Copy = structuredClone(field2);
+	let fieldCopy = structuredClone(field);
 	let massPaints = [];
 
-	giveAllPaints(str, col, player, massPaints, field2Copy);
-	// checkRing(massPaints);
+	giveAllPaints(str, col, player, massPaints, fieldCopy);
 	checkRing(massPaints)
-	
-	console.log(massPaints, 'всё');
 }
 
-let field2 = [
-	[
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-	],
-	[
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-	],
-	[
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-	],
-	[
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-	],
-	[
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-	],
-	[
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-	],
-	[
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-		{ player: "", statusChek: 0 },
-	],
-];
+// let field2 = [
+// 	[
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 	],
+// 	[
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 	],
+// 	[
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 	],
+// 	[
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 	],
+// 	[
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 	],
+// 	[
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 	],
+// 	[
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 		{ player: "", statusChek: 0 },
+// 	],
+// ];
 
-const squer = document.querySelector(".field2");
+// const squer = document.querySelector(".field2");
 
-for (let i = 0; i < field2.length; i++) {
-	let line = document.createElement("div");
-	line.classList.add(".line");
-	for (let j = 0; j < field2[i].length; j++) {
-		let btn = document.createElement("button");
-		if (field2[i][j].player !== "") {
-			if (field2[i][j].player) {
-				btn.classList.add("firstPlayer");
-			} else {
-				btn.classList.add("secondPlayer");
-			}
-		}
-		btn.id = `${i}n${j}`;
-		line.append(btn);
-		body.append(line);
-	}
-}
+// for (let i = 0; i < field2.length; i++) {
+// 	let line = document.createElement("div");
+// 	line.classList.add(".line");
+// 	for (let j = 0; j < field2[i].length; j++) {
+// 		let btn = document.createElement("button");
+// 		if (field2[i][j].player !== "") {
+// 			if (field2[i][j].player) {
+// 				btn.classList.add("firstPlayer");
+// 			} else {
+// 				btn.classList.add("secondPlayer");
+// 			}
+// 		}
+// 		btn.id = `${i}n${j}`;
+// 		line.append(btn);
+// 		body.append(line);
+// 	}
+// }
 
-function giveAllPaints(str, col, player, massPaints, field2Copy) {
-	console.log(str, col, player);
-
-	console.log(field2);
-
-	// let checks = [
-	// 	{ str: -1, col: -1 },
-	// 	{ str: -1, col: 0 },
-	// 	{ str: -1, col: +1 },
-	// 	{ str: 0, col: -1 },
-	// 	{ str: 0, col: +1 },
-	// 	{ str: +1, col: -1 },
-	// 	{ str: +1, col: 0 },
-	// 	{ str: +1, col: +1 },
-	// ];
+function giveAllPaints(str, col, player, massPaints, fieldCopy) {
 
 	let peremForPush = false;
 
@@ -241,42 +232,38 @@ function giveAllPaints(str, col, player, massPaints, field2Copy) {
 	for (let i = 0; i < massPaints.length; i++) {
 		if (massPaints[i].str == str && massPaints[i].col == col) {
 			peremForPush = true;
-			console.log(peremForPush);
 		}
 	}
 
 	if (!peremForPush) {
 		massPaints.push({ str, col, player, statusChek: 1 });
-		console.log(1);
 	}
 
-	field2Copy[str][col].statusChek = 1;
-	console.log(field2Copy[str - 1][col - 1]);
+	fieldCopy[str][col].statusChek = 1;
 
 	for (let i = 0; i < checks.length; i++) {
-		console.log(str + Number(checks[i].str), col + Number(checks[i].col));
+
 		if (
-			field2Copy[str + Number(checks[i].str)][col + Number(checks[i].col)]
+			fieldCopy[str + Number(checks[i].str)][col + Number(checks[i].col)]
 				.player === player &&
-			field2Copy[str + Number(checks[i].str)][col + Number(checks[i].col)]
+        fieldCopy[str + Number(checks[i].str)][col + Number(checks[i].col)]
 				.statusChek === 0 &&
 			checkOnPush(
 				str + Number(checks[i].str),
 				col + Number(checks[i].col),
 				massPaints
-			)
+			) &&
+			checkOnColore(str + Number(checks[i].str),col + Number(checks[i].col))
 		) {
-			console.log(massPaints);
 			massPaints.push({
 				str: str + Number(checks[i].str),
 				col: col + Number(checks[i].col),
 				player,
 				statusChek: 0,
 			});
+			console.log(str + Number(checks[i].str),col + Number(checks[i].col))
 		}
 	}
-
-	console.log(massPaints);
 	for (let i = 0; i < massPaints.length; i++) {
 		if (massPaints[i].statusChek || massPaints[i].player !== player) {
 			continue;
@@ -287,7 +274,7 @@ function giveAllPaints(str, col, player, massPaints, field2Copy) {
 			massPaints[i].col,
 			player,
 			massPaints,
-			field2Copy
+			fieldCopy
 		);
 	}
 }
@@ -306,11 +293,9 @@ function checkOnPush(strCheck, colCheck, massPaints) {
 			if (massPaints[i].statusChek === 0) {
 				console.log("yes"); //написать цифры и покрасить точки
 			}
-
 			return false;
 		}
 	}
-	console.log("no");
 	return true;
 }
 
@@ -318,11 +303,16 @@ function checkRing(massPaints) {
 	if(massPaints.length >= 4){
 		let firstComparisonPoint = false
 		let secondComparisonPoint = false
+
 		for(let i = 0; i < massPaints.length; i++){
 
 			if(i == massPaints.length - 3 || i == massPaints.length - 2){
 				for(let j = 0; j < checks.length; j++){
-					if(massPaints[i].str + checks[j].str == massPaints[massPaints.length-1].str && 
+          if(massPaints[massPaints.length - 3].str + checks[j].str == massPaints[massPaints.length - 2].str &&
+            massPaints[massPaints.length - 3].col + checks[j].col == massPaints[massPaints.length - 2].col){
+              return
+          }
+					if(massPaints[i].str + checks[j].str == massPaints[massPaints.length-1].str &&
 						massPaints[i].col + checks[j].col == massPaints[massPaints.length-1].col){
 						if(i == massPaints.length - 3){
 							firstComparisonPoint = true
@@ -332,17 +322,98 @@ function checkRing(massPaints) {
 				}
 			}
 		}
-		console.log(firstComparisonPoint,secondComparisonPoint)
 
 		if(firstComparisonPoint && secondComparisonPoint){
 			for(let i = 0; i < massPaints.length; i++){
 				const button = document.getElementById(`${massPaints[i].str}n${massPaints[i].col}`)
 				button.classList.add("green")
 			}
+            searchForSurroundedPoints(massPaints)
 		}
-
 	}
 }
 
+function colorForPlayer(){
+  	const teg = document.querySelector('.player')
+  	if(motion){
+    	teg.style.color = "blue"
+  	} else {teg.style.color = "red"}
+}
 
 
+colorForPlayer()
+
+function searchForSurroundedPoints(massPaints){
+      for(let i = 0; i < field.length;i++){
+			let pointsInString = []
+            //ищем строку
+            for(let j  = 0; j < massPaints.length; j++){
+                if (i != massPaints[j].str) {
+                    continue
+                }
+                //проверяем точки в строке
+				
+                for(let h = 0; h < field[i].length;h++){
+                    if (h != massPaints[j].col) {
+                        continue
+					}
+                    pointsInString.push({str:i,col:h})
+                }
+				if(pointsInString.length <= 1){
+					continue
+				}
+				sumPoints(pointsInString)
+            }
+    }
+}
+
+function changeScore(firstS, secondS){
+      const scoreFirst = document.querySelector(".scoreFirst");
+      const scoreSecond = document.querySelector(".scoreSecond");
+
+      scoreFirst.textContent = firstS;
+      scoreSecond.textContent = secondS;
+}
+changeScore(scoreFirst, scoreSecond);
+
+function sumPoints(mass){
+
+	let ColFirstPoint = mass[0].col > mass[1].col ? mass[1].col : mass[0].col
+	let ColSecondPoint = mass[0].col < mass[1].col ? mass[1].col : mass[0].col
+	let score = 0
+
+	if(ColFirstPoint+1 == ColSecondPoint){
+		return
+	}	
+	for(let i = ColFirstPoint+1;i < ColSecondPoint;i++){
+
+		if(field[mass[0].str][i].player != motion && field[mass[0].str][i].player !== ""){
+			score += 1
+		}
+	}
+	if(motion){
+		scoreSecond += score
+	}else{scoreFirst += score}
+
+	changeScore(scoreFirst, scoreSecond)
+}
+
+// sumPoints([{str:2, col: 3},{str:2,col:5}])
+
+function checkOnColore(str,col){
+	console.log(str,col)
+	const elem = document.getElementById(`${str}n${col}`)
+	console.log(elem)
+	let massClasses = elem.classList.value.split(' ')
+	if(massClasses.length === 0){
+		return true
+	}
+	for(let i = 0; i < massClasses.length;i++){
+		if(massClasses[i] == 'green'){
+			return false
+		}
+	}
+
+
+	return true
+}
